@@ -11,35 +11,36 @@
 *                                                     *
 \* * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+/// The module containing the Activation struct and basics ones.
 pub mod activations;
+/// The matrix module powering the Neural Network system.
 mod matrix;
+/// The actual Neural Network module containing the `Network` and `DatasetValue` structs.
 pub mod network;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn nn_test() {
         use super::{
             activations::SIGMOID,
-            network::{DataSetValue, Network},
+            network::{DatasetValue, Network},
         };
 
-        let dataset = [
-            DataSetValue {
+        let dataset: &[DatasetValue] = &[
+            DatasetValue {
                 inputs: &[0.0, 0.0],
                 targets: &[0.0],
             },
-            DataSetValue {
+            DatasetValue {
                 inputs: &[0.0, 1.0],
                 targets: &[1.0],
             },
-            DataSetValue {
+            DatasetValue {
                 inputs: &[1.0, 0.0],
                 targets: &[1.0],
             },
-            DataSetValue {
+            DatasetValue {
                 inputs: &[1.0, 1.0],
                 targets: &[0.0],
             },

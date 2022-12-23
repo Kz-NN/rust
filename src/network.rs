@@ -1,5 +1,8 @@
 use super::{activations::Activation, matrix::Matrix};
 
+/**
+ * The Neural Network class
+ */
 pub struct Network<'a> {
     layers: Vec<usize>,
     weights: Vec<Matrix>,
@@ -10,6 +13,26 @@ pub struct Network<'a> {
 }
 
 impl Network<'_> {
+    /**
+
+    The Neural Network constructor.
+
+    # Arguments
+
+    * `layers`: The sizes of the layers
+    * `learning_rate`: The training learning rate
+    * `activation`: The Activation struct containing the the activation function and his derivated
+
+    # Examples
+
+    ```
+    let mut nn = k_ai::network::Network::new(
+        &[2, 4, 1],
+        0.1,
+        k_ai::activations::SIGMOID,
+    );
+    ```
+    */
     pub fn new<'a>(
         layers: &[usize],
         learning_rate: f64,
@@ -33,6 +56,26 @@ impl Network<'_> {
         }
     }
 
+    /**
+
+    Result the output of a given input array.
+
+    # Arguments
+
+    * `inputs`: The inputs array to feed forward
+
+    # Examples
+
+    ```
+    let mut nn = k_ai::network::Network::new(
+        &[2, 4, 1],
+        0.1,
+        k_ai::activations::SIGMOID,
+    );
+
+    nn.feed_forward(&[0.0, 1.0]);
+    ```
+    */
     pub fn feed_forward(&mut self, inputs: &[f64]) -> Result<Vec<f64>, &str> {
         if inputs.len() != self.layers[0] {
             return Err("Invalid number of inputs");
@@ -52,7 +95,28 @@ impl Network<'_> {
         Ok(current.data[0].to_owned())
     }
 
-    pub fn back_propagate(&mut self, outputs: Vec<f64>, targets: Vec<f64>) -> Result<(), &str> {
+    /**
+
+    Back propagate and correct from the actual output and and the targeted output.
+
+    # Arguments
+
+    * `outputs`: The actual output
+    * `targets`: The wanted output
+
+    # Examples
+
+    ```
+    let mut nn = k_ai::network::Network::new(
+        &[2, 4, 1],
+        0.1,
+        k_ai::activations::SIGMOID,
+    );
+
+    nn.back_propagate(vec![0.035445333], vec![1.0]);
+    ```
+    */
+    fn back_propagate(&mut self, outputs: Vec<f64>, targets: Vec<f64>) -> Result<(), &str> {
         if targets.len() != self.layers[self.layers.len() - 1] {
             return Err("Invalid number of targets");
         }
@@ -76,22 +140,66 @@ impl Network<'_> {
         Ok(())
     }
 
-    pub fn train(&mut self, dataset: &[DataSetValue], epochs: u16) {
-        for i in 1..=epochs {
-            if epochs < 100 || i % (epochs / 100) == 0 {
-                println!("Epoch {} of {}", i, epochs);
+    /**
+
+    Train the Neural Network from an array of DatasetValue.
+
+    # Arguments
+
+    * `dataset`: The dataset to train from
+    * `iter`: The number of how many time to train the Neural Network
+
+    # Examples
+
+    ```
+    use k_ai::{
+        activations::SIGMOID,
+        network::{DatasetValue, Network},
+    };
+
+    let mut nn = Network::new(
+        &[2, 4, 1],
+        0.1,
+        SIGMOID,
+    );
+
+    nn.train(&[
+        DatasetValue {
+            inputs: &[0.0, 0.0],
+            targets: &[0.0],
+        },
+        DatasetValue {
+            inputs: &[0.0, 1.0],
+            targets: &[1.0],
+        },
+        DatasetValue {
+            inputs: &[1.0, 0.0],
+            targets: &[1.0],
+        },
+        DatasetValue {
+            inputs: &[1.0, 1.0],
+            targets: &[0.0],
+        },
+    ], 1_000);
+    ```
+    */
+    pub fn train(&mut self, dataset: &[DatasetValue], iter: u16) {
+        for i in 1..=iter {
+            if iter < 100 || i % (iter / 100) == 0 {
+                println!("Iteration {} of {}", i, iter);
             }
 
             for j in 0..dataset.len() {
                 let outputs = self.feed_forward(dataset[j].inputs).unwrap();
-                self.back_propagate(outputs, Vec::from(dataset[j].targets)).unwrap();
+                self.back_propagate(outputs, Vec::from(dataset[j].targets))
+                    .unwrap();
             }
         }
     }
 }
 
 #[derive(Clone)]
-pub struct DataSetValue<'a> {
+pub struct DatasetValue<'a> {
     pub inputs: &'a [f64],
     pub targets: &'a [f64],
 }
