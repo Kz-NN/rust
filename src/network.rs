@@ -1,4 +1,20 @@
+use std::{
+    fs::File,
+    io::{Read, Write},
+};
+
+use serde::{Deserialize, Serialize};
+use serde_json::{from_str, json};
+
 use super::{activations::Activation, matrix::Matrix};
+
+#[derive(Serialize, Deserialize)]
+struct SaveData {
+    inputs: usize,
+    weights: Vec<Vec<Vec<f64>>>,
+    biases: Vec<Vec<Vec<f64>>>,
+    learning_rate: f64,
+}
 
 /**
  * The Neural Network class
@@ -53,6 +69,49 @@ impl Network<'_> {
             data: vec![],
             activation,
             learning_rate,
+        }
+    }
+
+    pub fn save(&self, file: String) {
+        let mut file = File::create(file).expect("Unable to touch save file");
+
+        file.write_all(
+			json!({
+                "inputs": self.layers[0],
+				"weights": self.weights.clone().into_iter().map(|matrix| matrix.data).collect::<Vec<Vec<Vec<f64>>>>(),
+				"biases": self.biases.clone().into_iter().map(|matrix| matrix.data).collect::<Vec<Vec<Vec<f64>>>>(),
+                "learning_rate": self.learning_rate,
+			}).to_string().as_bytes(),
+		).expect("Unable to write to save file");
+    }
+
+    pub fn load<'a>(file: String, activation: Activation<'a>) -> Network<'a> {
+        let mut file = File::open(file).expect("Unable to open save file");
+        let mut buffer = String::new();
+
+        file.read_to_string(&mut buffer)
+            .expect("Unable to read save file");
+
+        let save_data: SaveData = from_str(&buffer).expect("Unable to serialize save data");
+
+        let mut weights = vec![];
+        let mut biases = vec![];
+        let mut layers: Vec<usize> = vec![save_data.inputs];
+
+        for i in 0..save_data.weights.len() {
+            layers.push(save_data.weights[i].len());
+
+            weights.push(Matrix::from(save_data.weights[i].clone()));
+            biases.push(Matrix::from(save_data.biases[i].clone()));
+        }
+
+        Network {
+            layers,
+            weights,
+            biases,
+            data: vec![],
+            activation,
+            learning_rate: save_data.learning_rate,
         }
     }
 

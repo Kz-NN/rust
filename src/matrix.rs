@@ -1,6 +1,7 @@
-use rand::{thread_rng, Rng};
+use rand::random;
+use serde::{Serialize, Deserialize};
 
-#[derive(Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Matrix {
     pub rows: usize,
     pub cols: usize,
@@ -17,11 +18,10 @@ impl Matrix {
     }
 
     pub fn random(rows: usize, cols: usize) -> Self {
-        let mut rng = thread_rng();
         let mut res: Self = Self::zeros(rows, cols);
         for i in 0..rows {
             for j in 0..cols {
-                res.data[i][j] = rng.gen::<f64>() + 2.0 - 1.0
+                res.data[i][j] = random::<f64>() + 2.0 - 1.0
             }
         }
 
@@ -34,6 +34,15 @@ impl Matrix {
             cols: data[0].len(),
             data,
         }
+    }
+
+    pub fn deserialize(serialized: &str) -> Self {
+        let m: Matrix = serde_json::from_str(serialized).unwrap();
+        m
+    }
+
+    pub fn serialized(&mut self) -> String {
+        serde_json::to_string(&self).unwrap()
     }
 
     pub fn multiply(&mut self, other: &Self) -> Self {

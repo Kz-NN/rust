@@ -10,7 +10,6 @@ The struct to create activation and derivated functions.
 * `dfunc`: The derivated of the activation function
 
 */
-
 #[derive(Clone)]
 pub struct Activation<'a> {
     pub func: &'a dyn Fn(f64) -> f64,
