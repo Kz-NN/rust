@@ -72,6 +72,26 @@ impl Network<'_> {
         }
     }
 
+    /**
+
+    Save the Neural Network data to a file.
+
+    # Arguments
+
+    * `file`: The file to save to
+
+    # Examples
+
+    ```
+    let mut nn = k_ai::network::Network::new(
+        &[2, 4, 1],
+        0.1,
+        k_ai::activations::SIGMOID,
+    );
+
+    nn.save("save.json");
+    ```
+    */
     pub fn save(&self, file: String) {
         let mut file = File::create(file).expect("Unable to touch save file");
 
@@ -85,7 +105,25 @@ impl Network<'_> {
 		).expect("Unable to write to save file");
     }
 
-    pub fn load<'a>(file: String, activation: Activation<'a>) -> Network<'a> {
+    /**
+
+    Deserialize a Neural Network from a file.
+
+    # Arguments
+
+    * `file`: The file to deserialize from
+    * `activation`: The Activation struct containing the the activation function and his derivated
+
+    # Examples
+
+    ```
+    let mut nn = k_ai::network::Network::deserialize(
+        "save.json",
+        k_ai::activations::SIGMOID,
+    );
+    ```
+    */
+    pub fn deserialize<'a>(file: String, activation: Activation<'a>) -> Network<'a> {
         let mut file = File::open(file).expect("Unable to open save file");
         let mut buffer = String::new();
 
@@ -257,6 +295,11 @@ impl Network<'_> {
     }
 }
 
+/**
+
+A DatasetValue is a struct containing an array of inputs and an array of targets.
+
+*/
 #[derive(Clone)]
 pub struct DatasetValue<'a> {
     pub inputs: &'a [f64],

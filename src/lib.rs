@@ -98,7 +98,7 @@ mod tests {
     }
 
     #[test]
-    fn load_test() {
+    fn deserialize_test() {
         let dataset: &[DatasetValue] = &[
             DatasetValue {
                 inputs: &[0.0, 0.0],
@@ -118,7 +118,7 @@ mod tests {
             },
         ];
 
-        let mut nn: Network = Network::load("xor.kai".to_string(), SIGMOID);
+        let mut nn: Network = Network::deserialize("xor.kai".to_string(), SIGMOID);
 
         for i in 0..dataset.len() {
             let res: Vec<f64> = nn.feed_forward(dataset[i].inputs).unwrap();
