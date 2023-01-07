@@ -33,5 +33,5 @@ The tanh and his derivated Activation struct.
 */
 pub const TANH: Activation = Activation {
     func: &|x| x.tanh(),
-    dfunc: &|x| 1.0 - x.powi(2),
+    dfunc: &|y| 1.0 - y.powi(2),
 };

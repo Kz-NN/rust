@@ -130,7 +130,7 @@ impl Network<'_> {
         file.read_to_string(&mut buffer)
             .expect("Unable to read save file");
 
-        let save_data: SaveData = from_str(&buffer).expect("Unable to serialize save data");
+        let save_data: SaveData = from_str(&buffer).expect("Unable to deserialize save data");
 
         let mut weights = vec![];
         let mut biases = vec![];
@@ -283,7 +283,7 @@ impl Network<'_> {
     pub fn train(&mut self, dataset: &[DatasetValue], iter: u16) {
         for i in 1..=iter {
             if iter < 100 || i % (iter / 100) == 0 {
-                println!("Iteration {} of {}", i, iter);
+                println!("Iteration {} of {} ({}%)", i, iter, (i / iter) * 100);
             }
 
             for j in 0..dataset.len() {

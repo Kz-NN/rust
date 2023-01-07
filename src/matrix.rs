@@ -21,7 +21,7 @@ impl Matrix {
         let mut res: Self = Self::zeros(rows, cols);
         for i in 0..rows {
             for j in 0..cols {
-                res.data[i][j] = random::<f64>() + 2.0 - 1.0
+                res.data[i][j] = random::<f64>() * 2.0 - 1.0
             }
         }
 
