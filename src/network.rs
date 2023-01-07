@@ -283,7 +283,12 @@ impl Network<'_> {
     pub fn train(&mut self, dataset: &[DatasetValue], iter: u16) {
         for i in 1..=iter {
             if iter < 100 || i % (iter / 100) == 0 {
-                println!("Iteration {} of {} ({}%)", i, iter, (i / iter) * 100);
+                println!(
+                    "Iteration {} of {} ({}%)",
+                    i,
+                    iter,
+                    (i as f64 / iter as f64 * 100.0).round()
+                );
             }
 
             for j in 0..dataset.len() {
