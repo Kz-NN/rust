@@ -189,7 +189,7 @@ impl Network<'_> {
             self.data.push(current.clone());
         }
 
-        Ok(current.data[0].to_owned())
+        Ok(current.transpose().data[0].to_owned())
     }
 
     /**
@@ -218,8 +218,8 @@ impl Network<'_> {
             return Err("Invalid number of targets");
         }
 
-        let mut parsed = Matrix::from(vec![outputs]);
-        let mut errors = Matrix::from(vec![targets]).subtract(&parsed);
+        let parsed = Matrix::from(vec![outputs]).transpose();
+        let mut errors = Matrix::from(vec![targets]).transpose().subtract(&parsed);
         let mut gradients = parsed.map(self.activation.dfunc);
 
         for i in (0..self.layers.len() - 1).rev() {

@@ -1,5 +1,5 @@
 use rand::random;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Matrix {
@@ -41,11 +41,11 @@ impl Matrix {
         m
     }
 
-    pub fn serialized(&mut self) -> String {
-        serde_json::to_string(&self).unwrap()
+    pub fn serialized(&self) -> String {
+        serde_json::to_string(self).unwrap()
     }
 
-    pub fn multiply(&mut self, other: &Self) -> Self {
+    pub fn multiply(&self, other: &Self) -> Self {
         if self.cols != other.rows {
             panic!("Attempted to multiply by matrix of incorrect dimensions");
         }
@@ -66,7 +66,7 @@ impl Matrix {
         res
     }
 
-    pub fn add(&mut self, other: &Self) -> Self {
+    pub fn add(&self, other: &Self) -> Self {
         if self.rows != other.rows || self.cols != other.cols {
             panic!("Attempted to add matrix of incorrect dimensions");
         }
@@ -82,7 +82,7 @@ impl Matrix {
         res
     }
 
-    pub fn dot_multiply(&mut self, other: &Self) -> Self {
+    pub fn dot_multiply(&self, other: &Self) -> Self {
         if self.rows != other.rows || self.cols != other.cols {
             panic!("Attempted to dot multiply by matrix of incorrect dimensions");
         }
@@ -98,7 +98,7 @@ impl Matrix {
         res
     }
 
-    pub fn subtract(&mut self, other: &Self) -> Self {
+    pub fn subtract(&self, other: &Self) -> Self {
         if self.rows != other.rows || self.cols != other.cols {
             panic!("Attempted to subtract matrix of incorrect dimensions");
         }
@@ -114,7 +114,7 @@ impl Matrix {
         res
     }
 
-    pub fn map(&mut self, func: &dyn Fn(f64) -> f64) -> Self {
+    pub fn map(&self, func: &dyn Fn(f64) -> f64) -> Self {
         Self::from(
             (self.data)
                 .clone()
@@ -124,7 +124,7 @@ impl Matrix {
         )
     }
 
-    pub fn transpose(&mut self) -> Self {
+    pub fn transpose(&self) -> Self {
         let mut res: Self = Self::zeros(self.cols, self.rows);
 
         for i in 0..self.rows {

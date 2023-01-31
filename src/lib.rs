@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *\
-* v1.5   Kelbaz Artificial Intellingence    By Kelbaz *
+* v1.6   Kelbaz Artificial Intellingence    By Kelbaz *
 *                                                     *
 *        @@@@@@@@@@@@@@   @@,              @*`'@      *
 *        @@@@@@@@@@@@'    @@@@,            @. ,@      *
@@ -29,33 +29,29 @@ mod tests {
     fn nn_test() {
         let dataset: &[DatasetValue] = &[
             DatasetValue {
-                inputs: &[0.0, 0.0],
-                targets: &[0.0],
+                inputs: &[1.0, 0.0, 0.0],
+                targets: &[0.0, 1.0, 0.0],
             },
             DatasetValue {
-                inputs: &[0.0, 1.0],
-                targets: &[1.0],
+                inputs: &[0.0, 1.0, 0.0],
+                targets: &[0.0, 0.0, 1.0],
             },
             DatasetValue {
-                inputs: &[1.0, 0.0],
-                targets: &[1.0],
-            },
-            DatasetValue {
-                inputs: &[1.0, 1.0],
-                targets: &[0.0],
-            },
+                inputs: &[0.0, 0.0, 1.0],
+                targets: &[1.0, 0.0, 0.0],
+            }
         ];
 
-        let mut nn = Network::new(&[2, 4, 1], 0.1, SIGMOID);
+        let mut nn = Network::new(&[3, 4, 3], 0.1, SIGMOID);
 
         nn.train(&dataset, 10_000);
         for i in 0..dataset.len() {
             let res: Vec<f64> = nn.feed_forward(dataset[i].inputs).unwrap();
             println!(
-                "{:?}\n => {:?}\n \\=> {}",
+                "{:?}\n => {:?}\n \\=> {:?}",
                 dataset[i].inputs,
                 res,
-                res[0] > 0.5
+                dataset[i].targets
             );
         }
     }
